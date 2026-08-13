@@ -1,0 +1,13 @@
+services:
+  - type: static
+    name: farmacia-frontend
+    plan: starter
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      # Este servicio vive en un repositorio/blueprint separado del backend,
+      # por lo que no se puede resolver automáticamente con `fromService`.
+      # Reemplaza el valor con la URL pública real del backend en Render,
+      # sin barra final, seguida de /api.
+      - key: VITE_API_URL
+        value: https://tu-backend.onrender.com/api
