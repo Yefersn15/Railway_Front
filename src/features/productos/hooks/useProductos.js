@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 
 export const useProductos = () => {
   const [productos, setProductos] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchProductos = async () => {
     setLoading(true);
