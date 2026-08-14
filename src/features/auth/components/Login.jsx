@@ -26,8 +26,7 @@ const Login = () => {
     try {
       const response = await authService.login(data.email, data.password);
       login(response.usuario, response.token);
-      toast.success('¡Bienvenido!');
-      navigate('/dashboard');
+      navigate(response.usuario.rol === 'admin' ? '/dashboard' : '/tienda');
     } catch (error) {
       toast.error(error.response?.data?.error || 'Error al iniciar sesión');
     } finally {
