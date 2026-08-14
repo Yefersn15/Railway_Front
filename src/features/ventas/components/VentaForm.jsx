@@ -95,7 +95,7 @@ const VentaForm = ({ onSubmit, onCancel }) => {
         </label>
         <select
           {...register('metodo_pago')}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
         >
           <option value="efectivo">Efectivo</option>
           <option value="tarjeta">Tarjeta de Crédito/Débito</option>
@@ -126,7 +126,7 @@ const VentaForm = ({ onSubmit, onCancel }) => {
             <div className="flex-1">
               <select
                 {...register(`detalles.${index}.producto_id`)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <option value="">Seleccionar producto</option>
                 {productos.map(p => (
@@ -145,7 +145,7 @@ const VentaForm = ({ onSubmit, onCancel }) => {
                 {...register(`detalles.${index}.cantidad`)}
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               {errors.detalles?.[index]?.cantidad && (
                 <p className="text-sm text-red-600 dark:text-red-400 mt-1">Cantidad válida</p>

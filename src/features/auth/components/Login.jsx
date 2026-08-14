@@ -63,7 +63,7 @@ const Login = () => {
                 id="email"
                 type="email"
                 placeholder="ejemplo@correo.com"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>
@@ -79,7 +79,7 @@ const Login = () => {
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password.message}</p>

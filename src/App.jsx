@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './features/auth/context/AuthContext';
+import { AuthProvider, useAuth } from './features/auth/context/AuthContext';
 import { LayoutProvider, useLayout } from './features/shared/context/LayoutContext';
 import { ThemeProvider } from './features/shared/context/ThemeContext';
 import ProtectedRoute from './features/shared/components/ProtectedRoute';
@@ -74,6 +74,15 @@ const AppRoutes = () => (
 
 const AppShell = () => {
   const { layoutMode, sidebarCollapsed } = useLayout();
+  const { usuario } = useAuth();
+
+  if (!usuario) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <AppRoutes />
+      </div>
+    );
+  }
 
   if (layoutMode === 'sidebar') {
     return (
