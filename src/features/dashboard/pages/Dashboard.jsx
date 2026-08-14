@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDashboard } from '../hooks/useDashboard';
 import DashboardCards from '../components/DashboardCards';
 import ProductChart from '../components/ProductChart';
@@ -7,6 +8,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const Dashboard = () => {
   const { stats, loading, error } = useDashboard();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -51,16 +53,28 @@ const Dashboard = () => {
       <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4">Acciones Rápidas</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 p-4 rounded-lg hover:bg-blue-200 transition">
+          <button
+            onClick={() => navigate('/ventas', { state: { openForm: true } })}
+            className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 p-4 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition"
+          >
             Nueva Venta
           </button>
-          <button className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 p-4 rounded-lg hover:bg-green-200 transition">
+          <button
+            onClick={() => navigate('/productos', { state: { openForm: true } })}
+            className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 p-4 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/50 transition"
+          >
             Agregar Producto
           </button>
-          <button className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 p-4 rounded-lg hover:bg-yellow-200 transition">
+          <button
+            onClick={() => navigate('/productos')}
+            className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 p-4 rounded-lg hover:bg-yellow-200 dark:hover:bg-yellow-900/50 transition"
+          >
             Actualizar Stock
           </button>
-          <button className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 p-4 rounded-lg hover:bg-purple-200 transition">
+          <button
+            onClick={() => navigate('/reportes')}
+            className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 p-4 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-900/50 transition"
+          >
             Ver Reportes
           </button>
         </div>

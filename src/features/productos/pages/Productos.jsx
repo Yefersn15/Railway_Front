@@ -1,22 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useProductos } from '../hooks/useProductos';
 import ProductTable from '../components/ProductTable';
 import ProductForm from '../components/ProductForm';
 import { Plus, Search, RefreshCw } from 'lucide-react';
 
 const Productos = () => {
-  const { 
-    productos, 
-    loading, 
-    createProducto, 
-    updateProducto, 
+  const {
+    productos,
+    loading,
+    createProducto,
+    updateProducto,
     deleteProducto,
-    fetchProductos 
+    fetchProductos
   } = useProductos();
-  
+
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.openForm) {
+      setEditingProduct(null);
+      setShowForm(true);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   const handleEdit = (producto) => {
     setEditingProduct(producto);

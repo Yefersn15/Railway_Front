@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useVentas } from '../hooks/useVentas';
 import VentaForm from '../components/VentaForm';
 import VentaTable from '../components/VentaTable';
@@ -7,6 +8,15 @@ import { Plus, RefreshCw } from 'lucide-react';
 const Ventas = () => {
   const { ventas, loading, fetchVentas, createVenta, getVentaDetalle } = useVentas();
   const [showForm, setShowForm] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.openForm) {
+      setShowForm(true);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   const handleCreateVenta = async (data) => {
     await createVenta(data);
