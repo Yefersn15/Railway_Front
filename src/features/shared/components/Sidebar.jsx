@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/context/AuthContext';
 import { useLayout } from '../context/LayoutContext';
 import { useTheme } from '../context/ThemeContext';
+import { useCart } from '../../tienda/context/CartContext';
 import { getNavItems } from '../navItems';
 import {
   Package,
@@ -15,12 +16,14 @@ import {
   ChevronsRight,
   Sun,
   Moon,
+  ShoppingBag,
 } from 'lucide-react';
 
 const Sidebar = () => {
   const { usuario, logout } = useAuth();
   const { setLayoutMode, sidebarCollapsed, toggleSidebarCollapsed } = useLayout();
   const { theme, toggleTheme } = useTheme();
+  const { totalItems } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -86,6 +89,22 @@ const Sidebar = () => {
           <PanelTop size={18} />
           {!collapsed && <span>Menú superior</span>}
         </button>
+        <Link
+          to="/carrito"
+          title={collapsed ? 'Carrito' : undefined}
+          className={`relative ${linkClasses('/carrito', collapsed)}`}
+          onClick={() => setMenuOpen(false)}
+        >
+          <ShoppingBag size={18} />
+          {!collapsed && <span>Carrito</span>}
+          {totalItems > 0 && (
+            <span className={`bg-blue-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center ${
+              collapsed ? 'absolute top-0 right-0' : ''
+            }`}>
+              {totalItems}
+            </span>
+          )}
+        </Link>
         <Link
           to="/perfil"
           title={collapsed ? usuario.nombre : undefined}

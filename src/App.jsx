@@ -12,15 +12,7 @@ const AppShell = () => {
   const { layoutMode, sidebarCollapsed } = useLayout();
   const { usuario } = useAuth();
 
-  if (!usuario) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <AppRoutes />
-      </div>
-    );
-  }
-
-  if (usuario.rol !== 'admin') {
+  if (!usuario || usuario.rol !== 'admin') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <PublicHeader />

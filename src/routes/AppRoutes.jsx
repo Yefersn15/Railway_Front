@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../features/auth/context/AuthContext';
-import PrivateRoute, { roleHome } from './PrivateRoute';
+import PrivateRoute from './PrivateRoute';
 
 // Auth
 import AuthPage from '../features/auth/pages/AuthPage';
@@ -17,7 +16,7 @@ import AdminDomicilios from '../features/domicilios/pages/AdminDomicilios';
 // Cualquier usuario autenticado
 import Perfil from '../features/usuarios/pages/Perfil';
 
-// Tienda (rol usuario)
+// Tienda (pública, cualquiera puede navegar y agregar al carrito sin loguearse)
 import Tienda from '../features/tienda/pages/Tienda';
 import Carrito from '../features/tienda/pages/Carrito';
 import Checkout from '../features/tienda/pages/Checkout';
@@ -46,42 +45,22 @@ const PageInConstruction = () => (
   </div>
 );
 
-// Redirige a la página de inicio correcta según el rol del usuario
-const RoleHome = () => {
-  const { usuario, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (!usuario) return <Navigate to="/login" replace />;
-  return <Navigate to={roleHome(usuario.rol)} replace />;
-};
-
 const AppRoutes = () => (
   <Routes>
-    {/* Rutas públicas */}
-    <Route path="/" element={<RoleHome />} />
+    {/* Rutas públicas: el catálogo es la página de inicio, sin necesidad de login */}
+    <Route path="/" element={<Tienda />} />
+    <Route path="/tienda" element={<Tienda />} />
+    <Route path="/tienda/categoria/:categoriaId" element={<Tienda />} />
+    <Route path="/carrito" element={<Carrito />} />
     <Route path="/login" element={<AuthPage />} />
     <Route path="/register" element={<AuthPage />} />
 
-    {/* Cualquier usuario autenticado */}
+    {/* Cualquier usuario autenticado (admin, usuario o domiciliario) puede comprar */}
     <Route element={<PrivateRoute />}>
-      <Route path="/perfil" element={<Perfil />} />
-    </Route>
-
-    {/* Tienda: rol usuario */}
-    <Route element={<PrivateRoute roles={['usuario']} />}>
-      <Route path="/tienda" element={<Tienda />} />
-      <Route path="/tienda/categoria/:categoriaId" element={<Tienda />} />
-      <Route path="/carrito" element={<Carrito />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/mis-pedidos" element={<MisPedidos />} />
       <Route path="/mis-domicilios" element={<MisDomicilios />} />
+      <Route path="/perfil" element={<Perfil />} />
     </Route>
 
     {/* Domiciliario */}
@@ -101,8 +80,8 @@ const AppRoutes = () => (
       <Route path="/configuracion" element={<PageInConstruction />} />
     </Route>
 
-    {/* Ruta 404 */}
-    <Route path="*" element={<RoleHome />} />
+    {/* Ruta 404: vuelve al catálogo */}
+    <Route path="*" element={<Navigate to="/" replace />} />
   </Routes>
 );
 

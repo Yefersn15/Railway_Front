@@ -4,28 +4,57 @@ import toast from 'react-hot-toast';
 
 const CartContext = createContext();
 
+const GUEST_KEY = 'carrito_guest';
+
+const readCart = (key) => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+const mergeCarts = (base, extra) => {
+  const merged = [...base];
+  extra.forEach((item) => {
+    const idx = merged.findIndex((i) => i.producto_id === item.producto_id);
+    if (idx > -1) {
+      merged[idx] = { ...merged[idx], cantidad: merged[idx].cantidad + item.cantidad };
+    } else {
+      merged.push(item);
+    }
+  });
+  return merged;
+};
+
 export const CartProvider = ({ children }) => {
   const { usuario } = useAuth();
-  const storageKey = usuario ? `carrito_${usuario.id}` : null;
+  const storageKey = usuario ? `carrito_${usuario.id}` : GUEST_KEY;
   const [items, setItems] = useState([]);
 
+  // Al iniciar sesión, fusiona lo que se agregó como invitado con el carrito del usuario.
   useEffect(() => {
-    if (!storageKey) {
-      setItems([]);
+    if (!usuario) {
+      setItems(readCart(GUEST_KEY));
       return;
     }
-    try {
-      const stored = localStorage.getItem(storageKey);
-      setItems(stored ? JSON.parse(stored) : []);
-    } catch (error) {
-      setItems([]);
+
+    const guestItems = readCart(GUEST_KEY);
+    const userItems = readCart(`carrito_${usuario.id}`);
+
+    if (guestItems.length > 0) {
+      const merged = mergeCarts(userItems, guestItems);
+      localStorage.removeItem(GUEST_KEY);
+      setItems(merged);
+    } else {
+      setItems(userItems);
     }
-  }, [storageKey]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usuario?.id]);
 
   useEffect(() => {
-    if (storageKey) {
-      localStorage.setItem(storageKey, JSON.stringify(items));
-    }
+    localStorage.setItem(storageKey, JSON.stringify(items));
   }, [items, storageKey]);
 
   const addToCart = (producto, cantidad = 1) => {

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/context/AuthContext';
 import { useLayout } from '../context/LayoutContext';
 import { useTheme } from '../context/ThemeContext';
+import { useCart } from '../../tienda/context/CartContext';
 import { getNavItems } from '../navItems';
 import {
   Package,
@@ -13,12 +14,14 @@ import {
   PanelLeft,
   Sun,
   Moon,
+  ShoppingBag,
 } from 'lucide-react';
 
 const Navbar = () => {
   const { usuario, logout } = useAuth();
   const { setLayoutMode } = useLayout();
   const { theme, toggleTheme } = useTheme();
+  const { totalItems } = useCart();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -72,6 +75,18 @@ const Navbar = () => {
               <PanelLeft size={18} />
             </button>
             <Link
+              to="/carrito"
+              title="Carrito"
+              className="relative text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              <ShoppingBag size={18} />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+            <Link
               to="/perfil"
               className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
             >
@@ -121,6 +136,14 @@ const Navbar = () => {
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               <span>{theme === 'dark' ? 'Tema claro' : 'Tema oscuro'}</span>
             </button>
+            <Link
+              to="/carrito"
+              className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-base font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              <ShoppingBag size={20} />
+              <span>Carrito {totalItems > 0 && `(${totalItems})`}</span>
+            </Link>
             <Link
               to="/perfil"
               className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-base font-medium"

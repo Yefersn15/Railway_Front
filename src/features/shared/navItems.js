@@ -9,6 +9,10 @@ import {
   ClipboardList,
 } from 'lucide-react';
 
+const GUEST_NAV_ITEMS = [
+  { path: '/tienda', icon: Store, label: 'Tienda' },
+];
+
 const ADMIN_NAV_ITEMS = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { path: '/productos', icon: Pill, label: 'Productos' },
@@ -16,6 +20,7 @@ const ADMIN_NAV_ITEMS = [
   { path: '/ventas', icon: ShoppingCart, label: 'Ventas' },
   { path: '/domicilios', icon: Truck, label: 'Domicilios' },
   { path: '/usuarios', icon: Users, label: 'Usuarios' },
+  { path: '/tienda', icon: Store, label: 'Tienda' },
 ];
 
 const USUARIO_NAV_ITEMS = [
@@ -26,10 +31,13 @@ const USUARIO_NAV_ITEMS = [
 
 const DOMICILIARIO_NAV_ITEMS = [
   { path: '/mis-entregas', icon: Truck, label: 'Mis Entregas' },
+  { path: '/tienda', icon: Store, label: 'Tienda' },
+  { path: '/mis-pedidos', icon: ClipboardList, label: 'Mis Pedidos' },
 ];
 
 export const getNavItems = (usuario) => {
-  if (usuario?.rol === 'admin') return ADMIN_NAV_ITEMS;
-  if (usuario?.rol === 'domiciliario') return DOMICILIARIO_NAV_ITEMS;
+  if (!usuario) return GUEST_NAV_ITEMS;
+  if (usuario.rol === 'admin') return ADMIN_NAV_ITEMS;
+  if (usuario.rol === 'domiciliario') return DOMICILIARIO_NAV_ITEMS;
   return USUARIO_NAV_ITEMS;
 };

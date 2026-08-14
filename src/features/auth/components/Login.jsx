@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -16,6 +16,7 @@ const schema = yup.object({
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -27,7 +28,10 @@ const Login = () => {
     try {
       const response = await authService.login(data.email, data.password);
       login(response.usuario, response.token);
-      navigate(roleHome(response.usuario.rol));
+      const redirectTo = location.state?.from
+        ? `${location.state.from.pathname}${location.state.from.search || ''}`
+        : roleHome(response.usuario.rol);
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       toast.error(error.response?.data?.error || 'Error al iniciar sesión');
     } finally {

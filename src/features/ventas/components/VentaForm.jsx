@@ -66,6 +66,14 @@ const VentaForm = ({ onSubmit, onCancel }) => {
   }, [detalles, productos]);
 
   const handleFormSubmit = async (data) => {
+    for (const detalle of data.detalles) {
+      const producto = productos.find(p => p.id === parseInt(detalle.producto_id));
+      if (producto && parseInt(detalle.cantidad) > producto.stock) {
+        toast.error(`Solo hay ${producto.stock} unidades disponibles de "${producto.nombre}"`);
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       const detallesConPrecio = data.detalles.map(detalle => {
