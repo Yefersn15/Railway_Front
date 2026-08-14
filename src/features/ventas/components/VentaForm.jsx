@@ -121,47 +121,62 @@ const VentaForm = ({ onSubmit, onCancel }) => {
           </button>
         </div>
 
-        {fields.map((field, index) => (
-          <div key={field.id} className="flex gap-3 items-end mb-3">
-            <div className="flex-1">
-              <select
-                {...register(`detalles.${index}.producto_id`)}
-                className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+        {fields.map((field, index) => {
+          const detalle = detalles?.[index];
+          const productoSeleccionado = detalle?.producto_id
+            ? productos.find(p => p.id === parseInt(detalle.producto_id))
+            : null;
+          const subtotal = productoSeleccionado
+            ? productoSeleccionado.precio * (detalle.cantidad || 0)
+            : 0;
+
+          return (
+            <div key={field.id} className="flex gap-3 items-end mb-3">
+              <div className="flex-1">
+                <select
+                  {...register(`detalles.${index}.producto_id`)}
+                  className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="">Seleccionar producto</option>
+                  {productos.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.nombre} - ${p.precio} (Stock: {p.stock})
+                    </option>
+                  ))}
+                </select>
+                {errors.detalles?.[index]?.producto_id && (
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">Selecciona un producto</p>
+                )}
+              </div>
+
+              <div className="w-24">
+                <input
+                  {...register(`detalles.${index}.cantidad`)}
+                  type="number"
+                  min="1"
+                  max={productoSeleccionado?.stock ?? undefined}
+                  className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                {errors.detalles?.[index]?.cantidad && (
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">Cantidad válida</p>
+                )}
+              </div>
+
+              <div className="w-24 text-right text-sm font-semibold text-gray-700 dark:text-gray-300 pb-2">
+                ${subtotal.toFixed(2)}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => remove(index)}
+                className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2"
+                disabled={fields.length === 1}
               >
-                <option value="">Seleccionar producto</option>
-                {productos.map(p => (
-                  <option key={p.id} value={p.id}>
-                    {p.nombre} - ${p.precio} (Stock: {p.stock})
-                  </option>
-                ))}
-              </select>
-              {errors.detalles?.[index]?.producto_id && (
-                <p className="text-sm text-red-600 dark:text-red-400 mt-1">Selecciona un producto</p>
-              )}
+                <Trash2 size={20} />
+              </button>
             </div>
-
-            <div className="w-24">
-              <input
-                {...register(`detalles.${index}.cantidad`)}
-                type="number"
-                min="1"
-                className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              {errors.detalles?.[index]?.cantidad && (
-                <p className="text-sm text-red-600 dark:text-red-400 mt-1">Cantidad válida</p>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => remove(index)}
-              className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2"
-              disabled={fields.length === 1}
-            >
-              <Trash2 size={20} />
-            </button>
-          </div>
-        ))}
+          );
+        })}
         {errors.detalles?.message && (
           <p className="text-sm text-red-600 dark:text-red-400">{errors.detalles.message}</p>
         )}

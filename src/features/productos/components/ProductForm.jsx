@@ -4,6 +4,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import api from '../../../api/axiosConfig';
 
+const getTodayString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const TODAY_STRING = getTodayString();
+const TODAY_DATE = new Date(`${TODAY_STRING}T00:00:00`);
+
 const schema = yup.object({
   nombre: yup.string().required('Nombre requerido').min(3, 'Mínimo 3 caracteres'),
   descripcion: yup.string(),
@@ -18,7 +29,10 @@ const schema = yup.object({
     .required('Stock requerido'),
   categoria_id: yup.number().typeError('Selecciona una categoría'),
   codigo_barras: yup.string(),
-  fecha_vencimiento: yup.date().typeError('Fecha inválida'),
+  fecha_vencimiento: yup.date()
+    .transform((value, originalValue) => (originalValue ? value : undefined))
+    .typeError('Fecha inválida')
+    .min(TODAY_DATE, 'La fecha de vencimiento no puede ser anterior a hoy'),
 });
 
 const ProductForm = ({ initialData, onSubmit, onCancel }) => {
@@ -143,6 +157,7 @@ const ProductForm = ({ initialData, onSubmit, onCancel }) => {
           <input
             {...register('fecha_vencimiento')}
             type="date"
+            min={TODAY_STRING}
             className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {errors.fecha_vencimiento && (
