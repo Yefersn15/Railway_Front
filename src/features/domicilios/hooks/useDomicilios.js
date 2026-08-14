@@ -6,7 +6,10 @@ export const useDomicilios = (scope = 'mis') => {
   const [domicilios, setDomicilios] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const endpoint = scope === 'todos' ? '/domicilios' : '/domicilios/mis-domicilios';
+  const endpoint =
+    scope === 'todos' ? '/domicilios'
+    : scope === 'entregas' ? '/domicilios/mis-entregas'
+    : '/domicilios/mis-domicilios';
 
   const fetchDomicilios = useCallback(async () => {
     setLoading(true);
@@ -31,9 +34,20 @@ export const useDomicilios = (scope = 'mis') => {
     }
   };
 
+  const asignarRepartidor = async (id, repartidor_id) => {
+    try {
+      await api.patch(`/domicilios/${id}/asignar`, { repartidor_id });
+      toast.success('Domiciliario asignado');
+      await fetchDomicilios();
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Error al asignar domiciliario');
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchDomicilios();
   }, [fetchDomicilios]);
 
-  return { domicilios, loading, fetchDomicilios, cambiarEstado };
+  return { domicilios, loading, fetchDomicilios, cambiarEstado, asignarRepartidor };
 };

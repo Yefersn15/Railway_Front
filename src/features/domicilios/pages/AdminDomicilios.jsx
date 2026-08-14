@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDomicilios } from '../hooks/useDomicilios';
+import { useUsuarios } from '../../usuarios/hooks/useUsuarios';
 import { Truck, RefreshCw } from 'lucide-react';
 
 const ESTADOS = ['pendiente', 'en_camino', 'entregado', 'cancelado'];
@@ -19,7 +20,10 @@ const ESTADO_SELECT_CLASS = {
 };
 
 const AdminDomicilios = () => {
-  const { domicilios, loading, fetchDomicilios, cambiarEstado } = useDomicilios('todos');
+  const { domicilios, loading, fetchDomicilios, cambiarEstado, asignarRepartidor } = useDomicilios('todos');
+  const { usuarios } = useUsuarios();
+
+  const domiciliarios = usuarios.filter((u) => u.rol === 'domiciliario');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -56,6 +60,7 @@ const AdminDomicilios = () => {
                 <th>Dirección</th>
                 <th>Teléfono</th>
                 <th>Total</th>
+                <th>Domiciliario</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -71,6 +76,18 @@ const AdminDomicilios = () => {
                   </td>
                   <td>{d.telefono || '—'}</td>
                   <td className="font-semibold">${Number(d.total).toFixed(2)}</td>
+                  <td>
+                    <select
+                      value={d.repartidor_id || ''}
+                      onChange={(e) => asignarRepartidor(d.id, e.target.value ? Number(e.target.value) : null)}
+                      className="text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Sin asignar</option>
+                      {domiciliarios.map((rep) => (
+                        <option key={rep.id} value={rep.id}>{rep.nombre}</option>
+                      ))}
+                    </select>
+                  </td>
                   <td>
                     <select
                       value={d.estado}

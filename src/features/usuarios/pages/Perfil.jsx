@@ -77,7 +77,7 @@ const Perfil = () => {
                     ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                 }`}>
-                  {perfil?.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                  {perfil?.rol === 'admin' ? 'Administrador' : perfil?.rol === 'domiciliario' ? 'Domiciliario' : 'Usuario'}
                 </span>
               </div>
             </div>
@@ -101,37 +101,41 @@ const Perfil = () => {
 
           <div className="border-t dark:border-gray-700 pt-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Preferencias</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Elige dónde quieres ver el menú de navegación.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <button
-                onClick={() => setLayoutMode('header')}
-                className={`flex items-center space-x-3 p-4 rounded-lg border-2 text-left transition-colors ${
-                  layoutMode === 'header'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                }`}
-              >
-                <PanelTop className={layoutMode === 'header' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'} />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">Menú superior</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Barra de navegación arriba</p>
+            {usuario?.rol === 'admin' && (
+              <>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Elige dónde quieres ver el menú de navegación.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  <button
+                    onClick={() => setLayoutMode('header')}
+                    className={`flex items-center space-x-3 p-4 rounded-lg border-2 text-left transition-colors ${
+                      layoutMode === 'header'
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    }`}
+                  >
+                    <PanelTop className={layoutMode === 'header' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'} />
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-gray-100">Menú superior</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Barra de navegación arriba</p>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setLayoutMode('sidebar')}
+                    className={`flex items-center space-x-3 p-4 rounded-lg border-2 text-left transition-colors ${
+                      layoutMode === 'sidebar'
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    }`}
+                  >
+                    <PanelLeft className={layoutMode === 'sidebar' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'} />
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-gray-100">Menú lateral</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Barra de navegación a la izquierda</p>
+                    </div>
+                  </button>
                 </div>
-              </button>
-              <button
-                onClick={() => setLayoutMode('sidebar')}
-                className={`flex items-center space-x-3 p-4 rounded-lg border-2 text-left transition-colors ${
-                  layoutMode === 'sidebar'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                }`}
-              >
-                <PanelLeft className={layoutMode === 'sidebar' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'} />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">Menú lateral</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Barra de navegación a la izquierda</p>
-                </div>
-              </button>
-            </div>
+              </>
+            )}
 
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Elige el tema visual de la aplicación.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -172,7 +176,7 @@ const Perfil = () => {
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <p className="text-sm text-blue-600 dark:text-blue-400">Rol</p>
                 <p className="text-lg font-bold text-blue-900 dark:text-blue-300">
-                  {perfil?.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                  {perfil?.rol === 'admin' ? 'Administrador' : perfil?.rol === 'domiciliario' ? 'Domiciliario' : 'Usuario'}
                 </p>
               </div>
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">

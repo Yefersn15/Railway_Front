@@ -72,11 +72,13 @@ const UsuarioTable = ({ usuarios, currentUserId, onEdit, onDelete }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    usuario.rol === 'admin' 
-                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300' 
+                    usuario.rol === 'admin'
+                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'
+                      : usuario.rol === 'domiciliario'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100'
                   }`}>
-                    {usuario.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                    {usuario.rol === 'admin' ? 'Administrador' : usuario.rol === 'domiciliario' ? 'Domiciliario' : 'Usuario'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

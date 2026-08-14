@@ -2,12 +2,13 @@
 
 Aplicación cliente en React + Vite + Tailwind para la gestión de una farmacia (autenticación, productos, categorías, ventas, usuarios y domicilios), consumiendo la API del [backend](../backend).
 
-La interfaz cambia según el rol del usuario autenticado:
+La interfaz cambia completamente según el rol del usuario autenticado (menú, layout y rutas permitidas):
 
-- **admin**: Dashboard, gestión de Productos/Categorías/Ventas/Usuarios, y gestión de Domicilios.
-- **usuario**: Tienda (catálogo público con carrito de compras), Checkout, y Mis Domicilios (seguimiento de sus propias entregas).
+- **admin**: Dashboard, gestión de Productos/Categorías/Ventas/Usuarios y gestión de Domicilios (asignar domiciliario, cambiar estado). Usa el layout con menú superior/lateral configurable (`Navbar`/`Sidebar`).
+- **usuario**: Tienda (catálogo con carrito de compras), Checkout, Mis Pedidos (historial de compras) y Mis Domicilios (seguimiento de sus entregas). Usa un layout público más simple (`PublicHeader`), con ícono de carrito y contador.
+- **domiciliario**: Mis Entregas — ve únicamente los domicilios que el admin le asignó y puede actualizar su estado (pendiente → en camino → entregado/cancelado), con filtro de historial.
 
-Un usuario no-admin no puede acceder a las páginas de administración ni por menú ni por URL directa (`AdminRoute` redirige a `/tienda`).
+El acceso está controlado por rol tanto en el menú como en las rutas: `src/routes/PrivateRoute.jsx` bloquea la navegación directa por URL a páginas que no correspondan al rol del usuario (redirige a su página de inicio). Las rutas de la app viven en `src/routes/AppRoutes.jsx`.
 
 ## Requisitos previos
 
@@ -51,7 +52,7 @@ La app queda disponible en `http://localhost:5173`.
 
 ## Funcionalidades de interfaz
 
-- **Layout configurable**: desde el ícono junto al usuario (o en Perfil) se puede elegir entre menú superior o menú lateral. El menú lateral admite modo compacto (solo iconos) con el botón sobre la línea divisoria del logo.
+- **Layout configurable** (solo admin): desde el ícono junto al usuario (o en Perfil) se puede elegir entre menú superior o menú lateral. El menú lateral admite modo compacto (solo iconos) con el botón sobre la línea divisoria del logo.
 - **Tema claro/oscuro**: seleccionable desde el mismo menú o desde Perfil; la preferencia se guarda en el navegador.
 - **Carrito de compras**: se guarda en `localStorage` por usuario (no requiere backend); persiste entre sesiones del mismo navegador.
 - **Checkout**: crea una venta normal en el backend; si el cliente marca "Solicitar entrega a domicilio", además se registra un domicilio asociado a esa venta.

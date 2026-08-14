@@ -6,7 +6,7 @@ import {
   Tag,
   Truck,
   Store,
-  ShoppingBag,
+  ClipboardList,
 } from 'lucide-react';
 
 const ADMIN_NAV_ITEMS = [
@@ -20,9 +20,16 @@ const ADMIN_NAV_ITEMS = [
 
 const USUARIO_NAV_ITEMS = [
   { path: '/tienda', icon: Store, label: 'Tienda' },
-  { path: '/carrito', icon: ShoppingBag, label: 'Carrito' },
+  { path: '/mis-pedidos', icon: ClipboardList, label: 'Mis Pedidos' },
   { path: '/mis-domicilios', icon: Truck, label: 'Mis Domicilios' },
 ];
 
-export const getNavItems = (usuario) =>
-  usuario?.rol === 'admin' ? ADMIN_NAV_ITEMS : USUARIO_NAV_ITEMS;
+const DOMICILIARIO_NAV_ITEMS = [
+  { path: '/mis-entregas', icon: Truck, label: 'Mis Entregas' },
+];
+
+export const getNavItems = (usuario) => {
+  if (usuario?.rol === 'admin') return ADMIN_NAV_ITEMS;
+  if (usuario?.rol === 'domiciliario') return DOMICILIARIO_NAV_ITEMS;
+  return USUARIO_NAV_ITEMS;
+};

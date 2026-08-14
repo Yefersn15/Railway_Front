@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import { authService } from '../authService';
 import { useAuth } from '../context/AuthContext';
+import { roleHome } from '../../../routes/PrivateRoute';
 import { Pill } from 'lucide-react';
 
 const schema = yup.object({
@@ -26,7 +27,7 @@ const Login = () => {
     try {
       const response = await authService.login(data.email, data.password);
       login(response.usuario, response.token);
-      navigate(response.usuario.rol === 'admin' ? '/dashboard' : '/tienda');
+      navigate(roleHome(response.usuario.rol));
     } catch (error) {
       toast.error(error.response?.data?.error || 'Error al iniciar sesión');
     } finally {
