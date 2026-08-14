@@ -133,37 +133,29 @@ const Tienda = () => {
           <p>No hay productos disponibles con esos filtros.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {productosFiltrados.map((producto) => (
             <div
               key={producto.id}
               onClick={() => openModal(producto)}
-              className="product-card cursor-pointer flex flex-col"
+              title={producto.nombre}
+              className="product-card cursor-pointer relative aspect-square flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500 transition"
             >
-              <div className="h-40 flex items-center justify-center bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                {producto.imagen_url ? (
-                  <img
-                    src={getOptimizedUrl(producto.imagen_url, { width: 300, height: 300 })}
-                    alt={producto.nombre}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <Package className="text-gray-400 dark:text-gray-500" size={48} />
-                )}
-              </div>
-              <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">{producto.nombre}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1 flex-1">
-                  {producto.descripcion || 'Sin descripción'}
-                </p>
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                    ${Number(producto.precio).toFixed(2)}
-                  </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Stock: {producto.stock}</span>
-                </div>
-              </div>
+              {producto.imagen_url ? (
+                <img
+                  src={getOptimizedUrl(producto.imagen_url, { width: 300, height: 300 })}
+                  alt={producto.nombre}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <Package className="text-gray-400 dark:text-gray-500" size={48} />
+              )}
+              {producto.stock < 10 && (
+                <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
+                  {producto.stock} u.
+                </span>
+              )}
             </div>
           ))}
         </div>
