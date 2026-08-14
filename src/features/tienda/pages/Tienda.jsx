@@ -164,68 +164,69 @@ const Tienda = () => {
       {/* Modal de detalle */}
       {selected && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{selected.nombre}</h2>
-                <button
-                  onClick={closeModal}
-                  className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  <X size={22} />
-                </button>
-              </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative">
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 z-10 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 bg-white/80 dark:bg-gray-800/80 rounded-full p-1"
+            >
+              <X size={22} />
+            </button>
 
-              <div className="h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg mb-4 overflow-hidden">
+            <div className="flex flex-col sm:flex-row">
+              <div className="sm:w-1/2 flex items-center justify-center bg-gray-100 dark:bg-gray-700 p-6 sm:rounded-l-xl">
                 {selected.imagen_url ? (
                   <img
-                    src={getOptimizedUrl(selected.imagen_url, { width: 600, height: 400 })}
+                    src={getOptimizedUrl(selected.imagen_url, { width: 600, height: 600 })}
                     alt={selected.nombre}
-                    className="h-full w-full object-cover"
+                    className="max-h-72 sm:max-h-96 w-full object-contain"
                   />
                 ) : (
                   <Package className="text-gray-400 dark:text-gray-500" size={64} />
                 )}
               </div>
 
-              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                <Tag size={14} className="mr-1" />
-                {categoriaNombre(selected.categoria_id)}
-              </div>
+              <div className="sm:w-1/2 p-6 flex flex-col">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 pr-8">{selected.nombre}</h2>
 
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                {selected.descripcion || 'Sin descripción disponible.'}
-              </p>
+                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-2 mb-3">
+                  <Tag size={14} className="mr-1" />
+                  {categoriaNombre(selected.categoria_id)}
+                </div>
 
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  ${Number(selected.precio).toFixed(2)}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{selected.stock} unidades disponibles</span>
-              </div>
+                <p className="text-gray-700 dark:text-gray-300 mb-4 flex-1">
+                  {selected.descripcion || 'Sin descripción disponible.'}
+                </p>
 
-              <div className="flex items-center gap-3">
-                <input
-                  type="number"
-                  min={1}
-                  max={selected.stock}
-                  value={cantidad}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value || '1', 10);
-                    setCantidad(Math.max(1, Math.min(selected.stock, isNaN(v) ? 1 : v)));
-                  }}
-                  className="w-20 px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  onClick={() => {
-                    addToCart(selected, cantidad);
-                    closeModal();
-                  }}
-                  className="flex-1 flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                >
-                  <ShoppingCart size={18} className="mr-2" />
-                  Agregar al carrito
-                </button>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    ${Number(selected.precio).toFixed(2)}
+                  </span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{selected.stock} unidades disponibles</span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    min={1}
+                    max={selected.stock}
+                    value={cantidad}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value || '1', 10);
+                      setCantidad(Math.max(1, Math.min(selected.stock, isNaN(v) ? 1 : v)));
+                    }}
+                    className="w-20 px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={() => {
+                      addToCart(selected, cantidad);
+                      closeModal();
+                    }}
+                    className="flex-1 flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    <ShoppingCart size={18} className="mr-2" />
+                    Agregar al carrito
+                  </button>
+                </div>
               </div>
             </div>
           </div>
