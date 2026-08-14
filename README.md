@@ -38,7 +38,29 @@ VITE_API_URL=http://localhost:5000/api
 
 Para producción, ajusta `VITE_API_URL` en `.env.production` (o en las variables de entorno del proveedor de hosting) con la URL pública del backend, **sin barra final**.
 
-### 3. Ejecutar en modo desarrollo
+### 3. Configurar Cloudinary (imágenes de productos)
+
+Las imágenes de los productos se suben directo desde el navegador a [Cloudinary](https://cloudinary.com) — **nunca pasan por nuestro backend ni se guardan en la base de datos** (solo se guarda el link). Esto evita gastar memoria/almacenamiento del servidor desplegado: la imagen viaja del navegador del usuario directo a Cloudinary, y Cloudinary se encarga de guardarla, optimizarla y servirla.
+
+1. Crea una cuenta gratis en [cloudinary.com](https://cloudinary.com) (el plan gratuito incluye 25GB de almacenamiento y 25GB de ancho de banda al mes, de sobra para este proyecto).
+2. En el Dashboard, copia tu **Cloud Name** (aparece arriba, ej. `dxxxxx`).
+3. Ve a **Settings → Upload → Upload presets → Add upload preset**:
+   - **Signing Mode**: `Unsigned` (permite subir desde el navegador sin exponer tu API secret).
+   - Opcional pero recomendado: en **Folder** pon algo como `farmacia-productos` para mantener las imágenes organizadas, y en **Upload Manipulations** puedes limitar el tamaño máximo de archivo.
+   - Guarda y copia el **nombre del preset**.
+4. Completa en `.env.development` (local) y en las Variables del servicio en Railway (producción):
+   ```env
+   VITE_CLOUDINARY_CLOUD_NAME=tu_cloud_name
+   VITE_CLOUDINARY_UPLOAD_PRESET=tu_upload_preset
+   ```
+
+Si estas variables no están configuradas, el formulario de productos simplemente deshabilita el botón de subir imagen (el resto de la app funciona igual, sin imágenes).
+
+**Cómo se ahorra memoria/ancho de banda:**
+- El backend (`Railway_Back`) nunca recibe los bytes de la imagen — solo guarda la URL (`imagen_url`) que Cloudinary devuelve, un texto de unos 100 caracteres. Cero uso de memoria del servidor ni de espacio en PostgreSQL por las imágenes.
+- Al mostrar las imágenes (catálogo, carrito, tablas), se usa `src/utils/cloudinary.js#getOptimizedUrl`, que inserta transformaciones en la URL (`w_,h_,c_fill,q_auto,f_auto`) para pedirle a Cloudinary una versión pequeña, comprimida y en el formato más liviano que soporte el navegador (WebP/AVIF cuando aplica), en vez de descargar la foto original en alta resolución en cada tarjeta.
+
+### 4. Ejecutar en modo desarrollo
 
 ```bash
 npm run dev
@@ -60,6 +82,7 @@ La app queda disponible en `http://localhost:5173`.
 - **Tema claro/oscuro**: seleccionable desde el mismo menú o desde Perfil; la preferencia se guarda en el navegador.
 - **Carrito de compras**: se guarda en `localStorage` (por invitado o por usuario) sin requerir backend; persiste entre sesiones del mismo navegador. Si agregas productos como invitado y luego inicias sesión, ese carrito se fusiona automáticamente con el de tu cuenta.
 - **Checkout**: crea una venta normal en el backend; si el cliente marca "Solicitar entrega a domicilio", además se registra un domicilio asociado a esa venta.
+- **Imágenes de productos**: el admin puede subir una foto por producto desde el formulario (ver sección de Cloudinary arriba); se muestra en el catálogo, el modal de detalle, el carrito, el checkout y la tabla de administración.
 
 ## Despliegue
 

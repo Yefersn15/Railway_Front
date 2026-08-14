@@ -1,5 +1,6 @@
 import React from 'react';
 import { Edit, Trash2, Package } from 'lucide-react';
+import { getOptimizedUrl } from '../../../utils/cloudinary';
 
 const ProductTable = ({ productos, onEdit, onDelete }) => {
   if (productos.length === 0) {
@@ -51,8 +52,16 @@ const ProductTable = ({ productos, onEdit, onDelete }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                      <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <div className="flex-shrink-0 h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center overflow-hidden">
+                      {producto.imagen_url ? (
+                        <img
+                          src={getOptimizedUrl(producto.imagen_url, { width: 80, height: 80 })}
+                          alt={producto.nombre}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      )}
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900 dark:text-gray-100">

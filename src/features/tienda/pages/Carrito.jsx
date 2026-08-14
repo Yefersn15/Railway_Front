@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProductos } from '../../productos/hooks/useProductos';
 import { Trash2, ShoppingCart, Package } from 'lucide-react';
+import { getOptimizedUrl } from '../../../utils/cloudinary';
 
 const Carrito = () => {
   const { items, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -60,8 +61,16 @@ const Carrito = () => {
         <div className="lg:col-span-2 space-y-4">
           {itemsConProducto.map(({ producto, cantidad }) => (
             <div key={producto.id} className="card p-4 flex items-center gap-4">
-              <div className="h-16 w-16 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <Package className="text-gray-400 dark:text-gray-500" size={28} />
+              <div className="h-16 w-16 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                {producto.imagen_url ? (
+                  <img
+                    src={getOptimizedUrl(producto.imagen_url, { width: 128, height: 128 })}
+                    alt={producto.nombre}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Package className="text-gray-400 dark:text-gray-500" size={28} />
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-gray-900 dark:text-gray-100 truncate">{producto.nombre}</h3>

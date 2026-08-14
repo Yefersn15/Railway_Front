@@ -5,6 +5,7 @@ import { useProductos } from '../../productos/hooks/useProductos';
 import api from '../../../api/axiosConfig';
 import toast from 'react-hot-toast';
 import { Package } from 'lucide-react';
+import { getOptimizedUrl } from '../../../utils/cloudinary';
 
 const Checkout = () => {
   const { items, clearCart } = useCart();
@@ -210,8 +211,16 @@ const Checkout = () => {
           <div className="space-y-3 mb-4">
             {itemsConProducto.map(({ producto, cantidad }) => (
               <div key={producto.id} className="flex items-center gap-3">
-                <div className="h-10 w-10 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md">
-                  <Package className="text-gray-400 dark:text-gray-500" size={18} />
+                <div className="h-10 w-10 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden">
+                  {producto.imagen_url ? (
+                    <img
+                      src={getOptimizedUrl(producto.imagen_url, { width: 80, height: 80 })}
+                      alt={producto.nombre}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Package className="text-gray-400 dark:text-gray-500" size={18} />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{producto.nombre}</p>

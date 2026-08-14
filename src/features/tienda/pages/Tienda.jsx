@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useProductos } from '../../productos/hooks/useProductos';
 import { useCategorias } from '../../categorias/hooks/useCategorias';
 import { useCart } from '../context/CartContext';
+import { getOptimizedUrl } from '../../../utils/cloudinary';
 import { Search, Package, X, ShoppingCart, Tag } from 'lucide-react';
 
 const Tienda = () => {
@@ -139,8 +140,17 @@ const Tienda = () => {
               onClick={() => openModal(producto)}
               className="product-card cursor-pointer flex flex-col"
             >
-              <div className="h-40 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
-                <Package className="text-gray-400 dark:text-gray-500" size={48} />
+              <div className="h-40 flex items-center justify-center bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                {producto.imagen_url ? (
+                  <img
+                    src={getOptimizedUrl(producto.imagen_url, { width: 300, height: 300 })}
+                    alt={producto.nombre}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Package className="text-gray-400 dark:text-gray-500" size={48} />
+                )}
               </div>
               <div className="p-4 flex flex-col flex-1">
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-1">{producto.nombre}</h3>
@@ -174,8 +184,16 @@ const Tienda = () => {
                 </button>
               </div>
 
-              <div className="h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg mb-4">
-                <Package className="text-gray-400 dark:text-gray-500" size={64} />
+              <div className="h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg mb-4 overflow-hidden">
+                {selected.imagen_url ? (
+                  <img
+                    src={getOptimizedUrl(selected.imagen_url, { width: 600, height: 400 })}
+                    alt={selected.nombre}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Package className="text-gray-400 dark:text-gray-500" size={64} />
+                )}
               </div>
 
               <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">

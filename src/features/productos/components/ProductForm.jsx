@@ -3,6 +3,9 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import api from '../../../api/axiosConfig';
+import { uploadImage, isCloudinaryConfigured } from '../../../utils/cloudinary';
+import { ImagePlus, X, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const getTodayString = () => {
   const now = new Date();
@@ -29,6 +32,7 @@ const schema = yup.object({
     .required('Stock requerido'),
   categoria_id: yup.number().typeError('Selecciona una categoría'),
   codigo_barras: yup.string(),
+  imagen_url: yup.string().nullable(),
   fecha_vencimiento: yup.date()
     .transform((value, originalValue) => (originalValue ? value : undefined))
     .typeError('Fecha inválida')
@@ -38,10 +42,36 @@ const schema = yup.object({
 const ProductForm = ({ initialData, onSubmit, onCancel }) => {
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+  const [uploading, setUploading] = useState(false);
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm({
     resolver: yupResolver(schema),
     defaultValues: initialData || {}
   });
+
+  const imagenUrl = watch('imagen_url');
+  const cloudinaryReady = isCloudinaryConfigured();
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('El archivo debe ser una imagen');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const url = await uploadImage(file);
+      setValue('imagen_url', url, { shouldDirty: true });
+      toast.success('Imagen subida correctamente');
+    } catch (error) {
+      toast.error(error.message || 'Error al subir la imagen');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -72,6 +102,61 @@ const ProductForm = ({ initialData, onSubmit, onCancel }) => {
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+      <input type="hidden" {...register('imagen_url')} />
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Imagen del producto
+        </label>
+        <div className="flex items-center gap-4">
+          <div className="h-24 w-24 shrink-0 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 flex items-center justify-center overflow-hidden relative">
+            {imagenUrl ? (
+              <>
+                <img src={imagenUrl} alt="Vista previa" className="h-full w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setValue('imagen_url', '', { shouldDirty: true })}
+                  className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 hover:bg-black/80"
+                  title="Quitar imagen"
+                >
+                  <X size={14} />
+                </button>
+              </>
+            ) : (
+              <ImagePlus className="text-gray-400 dark:text-gray-500" size={28} />
+            )}
+          </div>
+          <div className="flex-1">
+            <label
+              className={`inline-flex items-center px-3 py-2 rounded-md text-sm font-medium border cursor-pointer transition ${
+                cloudinaryReady
+                  ? 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  : 'border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-600 cursor-not-allowed'
+              }`}
+            >
+              {uploading ? (
+                <Loader2 className="animate-spin mr-2" size={16} />
+              ) : (
+                <ImagePlus className="mr-2" size={16} />
+              )}
+              {uploading ? 'Subiendo...' : 'Elegir imagen'}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={!cloudinaryReady || uploading}
+                onChange={handleImageChange}
+              />
+            </label>
+            {!cloudinaryReady && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Configura VITE_CLOUDINARY_CLOUD_NAME y VITE_CLOUDINARY_UPLOAD_PRESET para habilitar la subida de imágenes.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
